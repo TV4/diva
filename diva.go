@@ -44,13 +44,9 @@ var (
 )
 
 // RawURL converts diva rawurl string into CDN rawurl string
-type RawURL string
-
-func (u RawURL) String() string {
-	rawurl := string(u)
-
-	if url, err := Parse(rawurl); err == nil {
-		return url.String()
+func RawURL(rawurl string) string {
+	if u, err := Parse(rawurl); err == nil {
+		return u.String()
 	}
 
 	return rawurl

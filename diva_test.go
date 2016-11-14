@@ -8,26 +8,25 @@ import (
 	"github.com/TV4/diva"
 )
 
-func TestRawURL(t *testing.T) {
+func TestConvertRawURL(t *testing.T) {
 	for i, tt := range []struct {
-		url  diva.RawURL
-		want string
+		rawurl string
+		want   string
 	}{
 		{"http://example.com/foo/bar.jpg", "http://example.com/foo/bar.jpg"},
 		{"http://diva.cmore.se/image.aspx?id=e4c78001-2854-4151-baa5-a46e070f2cee&formatid=215", "https://img-cdn-cmore.b17g.services/e4c78001-2854-4151-baa5-a46e070f2cee/215.img"},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			if got := tt.url.String(); got != tt.want {
-				t.Fatalf("url.String() = %q, want %q", got, tt.want)
+			if got := diva.RawURL(tt.rawurl); got != tt.want {
+				t.Fatalf("diva.RawURL(%q) = %q, want %q", tt.rawurl, got, tt.want)
 			}
 		})
 	}
 }
 
 func ExampleRawURL() {
-	u := diva.RawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1")
+	fmt.Println(diva.RawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"))
 
-	fmt.Println(u.String())
 	// Output: https://img-cdn-cmore.b17g.services/a21630f5-ef51-4632-bf6f-cc94073d3cb1/221.img
 }
 
