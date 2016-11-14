@@ -4,3 +4,7 @@
 [![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/TV4/diva)
 
 Convert diva.cmore.se URLs into img-cdn-cmore.b17g.services URLs
+
+## Installation
+
+    go get -u github.com/TV4/diva
