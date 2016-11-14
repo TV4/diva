@@ -21,7 +21,7 @@ A small usage example
     )
 
     func main() {
-        fmt.Println(diva.RawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"))
+        fmt.Println(diva.CDNRawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"))
     }
 
 */
@@ -43,8 +43,8 @@ var (
 	ErrMissingRequiredArgument = fmt.Errorf("missing required argument")
 )
 
-// RawURL converts diva rawurl string into CDN rawurl string
-func RawURL(rawurl string) string {
+// CDNRawURL converts diva rawurl string into CDN rawurl string
+func CDNRawURL(rawurl string) string {
 	if u, err := Parse(rawurl); err == nil {
 		return u.String()
 	}
