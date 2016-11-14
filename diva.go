@@ -21,8 +21,8 @@ A small usage example
     )
 
     func main() {
-			fmt.Println(diva.RawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"))
-		}
+      fmt.Println(diva.RawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"))
+    }
 
 */
 package diva
