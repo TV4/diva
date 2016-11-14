@@ -1,3 +1,30 @@
+/*
+
+Package diva converts diva.cmore.se URLs into img-cdn-cmore.b17g.services URLs
+
+Installation
+
+Just go get the package:
+
+    go get -u github.com/TV4/diva
+
+Usage
+
+A small usage example
+
+    package main
+
+    import (
+    	"fmt"
+
+    	"github.com/TV4/diva"
+    )
+
+    func main() {
+			fmt.Println(diva.RawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"))
+		}
+
+*/
 package diva
 
 import (
