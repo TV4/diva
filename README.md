@@ -12,6 +12,8 @@ Convert diva.cmore.se URLs into img-cdn-cmore.b17g.services URLs
 
 ## Usage
 
+### Basic
+
 ```go
 package main
 
@@ -25,5 +27,24 @@ func main() {
 	rawurl := "http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"
 
 	fmt.Println(diva.CDNRawURL(rawurl))
+}
+```
+
+### Custom base URL
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/TV4/diva"
+)
+
+func main() {
+	rawurl := "http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"
+
+	dc := diva.NewConverter("https://example.com/")
+
+	fmt.Println(dc.CDNRawURL(rawurl))
 }
 ```
