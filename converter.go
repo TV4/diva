@@ -55,11 +55,11 @@ func (c *Converter) NewURL(id, id2, formatID string) (*url.URL, error) {
 	return &url.URL{
 		Scheme: "https",
 		Host:   "img-cdn-cmore.b17g.services",
-		Path:   path(id, id2, formatID),
+		Path:   makePath(id, id2, formatID),
 	}, nil
 }
 
-func path(id, id2, formatID string) string {
+func makePath(id, id2, formatID string) string {
 	if id2 != "" {
 		return fmt.Sprintf("%s/%s/%s.img", id, id2, formatID)
 	}
