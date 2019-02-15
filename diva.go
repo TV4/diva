@@ -33,6 +33,10 @@ import (
 )
 
 var (
+	// ErrMissingBaseURL is returned when trying to generate an URL without having
+	// configured a base URL.
+	ErrMissingBaseURL = fmt.Errorf("missing base URL")
+
 	// ErrNotDivaURL is returned when trying to parse a
 	// rawurl that isn’t from diva.cmore.se
 	ErrNotDivaURL = fmt.Errorf("not a diva URL")
@@ -43,7 +47,7 @@ var (
 )
 
 // defaultConverter is the converter used when calling package-level functions.
-var defaultConverter = NewConverter()
+var defaultConverter = NewConverter("https://img-cdn-cmore.b17g.services/")
 
 // CDNRawURL converts diva rawurl string into CDN rawurl string
 func CDNRawURL(rawurl string) string {
