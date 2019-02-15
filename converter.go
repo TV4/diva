@@ -38,20 +38,25 @@ func (c *Converter) Parse(rawurl string) (*url.URL, error) {
 		return nil, &url.Error{Op: "parse", URL: rawurl, Err: ErrMissingRequiredArgument}
 	}
 
-	return c.NewURL(u.Query().Get("id"), u.Query().Get("id2"), u.Query().Get("formatid")), nil
+	nu, err := c.NewURL(u.Query().Get("id"), u.Query().Get("id2"), u.Query().Get("formatid"))
+	if err != nil {
+		return nil, &url.Error{Op: "parse", URL: rawurl, Err: err}
+	}
+
+	return nu, nil
 }
 
 // NewURL creates a new image URL with the given ids and format
-func (c *Converter) NewURL(id, id2, formatID string) *url.URL {
+func (c *Converter) NewURL(id, id2, formatID string) (*url.URL, error) {
 	if id == "" || formatID == "" {
-		return &url.URL{}
+		return nil, ErrMissingRequiredArgument
 	}
 
 	return &url.URL{
 		Scheme: "https",
 		Host:   "img-cdn-cmore.b17g.services",
 		Path:   path(id, id2, formatID),
-	}
+	}, nil
 }
 
 func path(id, id2, formatID string) string {

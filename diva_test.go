@@ -21,8 +21,9 @@ func ExampleParse() {
 }
 
 func ExampleNewURL() {
-	u := diva.NewURL("id1", "id2", "format")
-	fmt.Println(u.String())
+	if u, err := diva.NewURL("id1", "id2", "format"); err == nil {
+		fmt.Println(u.String())
+	}
 
 	// Output: https://img-cdn-cmore.b17g.services/id1/id2/format.img
 }

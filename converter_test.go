@@ -80,23 +80,33 @@ func ExampleConverter_Parse() {
 func TestConverter_NewURL(t *testing.T) {
 	for i, tt := range []struct {
 		id1, id2, formatID, want string
+		wantErr                  bool
 	}{
-		{"", "", "", ""},
-		{"id1", "", "", ""},
-		{"id1", "id2", "", ""},
-		{"", "id2", "", ""},
-		{"", "", "format", ""},
-		{"", "id2", "format", ""},
-		{"id1", "", "format", "https://img-cdn-cmore.b17g.services/id1/format.img"},
-		{"id1", "id2", "format", "https://img-cdn-cmore.b17g.services/id1/id2/format.img"},
+		{"", "", "", "", true},
+		{"id1", "", "", "", true},
+		{"id1", "id2", "", "", true},
+		{"", "id2", "", "", true},
+		{"", "", "format", "", true},
+		{"", "id2", "format", "", true},
+		{"id1", "", "format", "https://img-cdn-cmore.b17g.services/id1/format.img", false},
+		{"id1", "id2", "format", "https://img-cdn-cmore.b17g.services/id1/id2/format.img", false},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			conv := NewConverter()
 
-			u := conv.NewURL(tt.id1, tt.id2, tt.formatID)
+			u, err := conv.NewURL(tt.id1, tt.id2, tt.formatID)
 
-			if got := u.String(); got != tt.want {
-				t.Fatalf("u.String() = %q, want %q", got, tt.want)
+			switch {
+			case !tt.wantErr && err == nil:
+				if got := u.String(); got != tt.want {
+					t.Fatalf("u.String() = %q, want %q", got, tt.want)
+				}
+			case tt.wantErr && err != nil:
+				// ok
+			case tt.wantErr && err == nil:
+				t.Fatalf("[%d] got nil, want error", i)
+			case !tt.wantErr && err != nil:
+				t.Fatalf("[%d] got error, want nil: %v", i, err)
 			}
 		})
 	}

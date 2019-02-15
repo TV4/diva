@@ -56,6 +56,6 @@ func Parse(rawurl string) (*url.URL, error) {
 }
 
 // NewURL creates a new image URL with the given ids and format
-func NewURL(id, id2, formatID string) *url.URL {
+func NewURL(id, id2, formatID string) (*url.URL, error) {
 	return defaultConverter.NewURL(id, id2, formatID)
 }
