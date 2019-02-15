@@ -30,7 +30,6 @@ package diva
 import (
 	"fmt"
 	"net/url"
-	"strings"
 )
 
 var (
@@ -43,50 +42,20 @@ var (
 	ErrMissingRequiredArgument = fmt.Errorf("missing required argument")
 )
 
+// defaultConverter is the converter used when calling package-level functions.
+var defaultConverter = NewConverter()
+
 // CDNRawURL converts diva rawurl string into CDN rawurl string
 func CDNRawURL(rawurl string) string {
-	if u, err := Parse(rawurl); err == nil {
-		return u.String()
-	}
-
-	return rawurl
+	return defaultConverter.CDNRawURL(rawurl)
 }
 
 // Parse diva rawurl into CDN *url.URL
 func Parse(rawurl string) (*url.URL, error) {
-	if !strings.Contains(rawurl, "diva.cmore.se/image.aspx") {
-		return nil, &url.Error{Op: "parse", URL: rawurl, Err: ErrNotDivaURL}
-	}
-
-	u, err := url.Parse(rawurl)
-	if err != nil {
-		return nil, err
-	}
-
-	if u.Query().Get("id") == "" || u.Query().Get("formatid") == "" {
-		return nil, &url.Error{Op: "parse", URL: rawurl, Err: ErrMissingRequiredArgument}
-	}
-
-	return NewURL(u.Query().Get("id"), u.Query().Get("id2"), u.Query().Get("formatid")), nil
+	return defaultConverter.Parse(rawurl)
 }
 
 // NewURL creates a new image URL with the given ids and format
 func NewURL(id, id2, formatID string) *url.URL {
-	if id == "" || formatID == "" {
-		return &url.URL{}
-	}
-
-	return &url.URL{
-		Scheme: "https",
-		Host:   "img-cdn-cmore.b17g.services",
-		Path:   path(id, id2, formatID),
-	}
-}
-
-func path(id, id2, formatID string) string {
-	if id2 != "" {
-		return fmt.Sprintf("%s/%s/%s.img", id, id2, formatID)
-	}
-
-	return fmt.Sprintf("%s/%s.img", id, formatID)
+	return defaultConverter.NewURL(id, id2, formatID)
 }

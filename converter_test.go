@@ -1,14 +1,12 @@
-package diva_test
+package diva
 
 import (
 	"fmt"
 	"net/url"
 	"testing"
-
-	"github.com/TV4/diva"
 )
 
-func TestCDNRawURL(t *testing.T) {
+func TestConverter_CDNRawURL(t *testing.T) {
 	for i, tt := range []struct {
 		rawurl string
 		want   string
@@ -17,32 +15,38 @@ func TestCDNRawURL(t *testing.T) {
 		{"http://diva.cmore.se/image.aspx?id=e4c78001-2854-4151-baa5-a46e070f2cee&formatid=215", "https://img-cdn-cmore.b17g.services/e4c78001-2854-4151-baa5-a46e070f2cee/215.img"},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			if got := diva.CDNRawURL(tt.rawurl); got != tt.want {
-				t.Fatalf("diva.RawURL(%q) = %q, want %q", tt.rawurl, got, tt.want)
+			conv := NewConverter()
+
+			if got := conv.CDNRawURL(tt.rawurl); got != tt.want {
+				t.Fatalf("conv.RawURL(%q) = %q, want %q", tt.rawurl, got, tt.want)
 			}
 		})
 	}
 }
 
-func ExampleCDNRawURL() {
-	fmt.Println(diva.CDNRawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"))
+func ExampleConverter_CDNRawURL() {
+	conv := NewConverter()
+
+	fmt.Println(conv.CDNRawURL("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"))
 
 	// Output: https://img-cdn-cmore.b17g.services/a21630f5-ef51-4632-bf6f-cc94073d3cb1/221.img
 }
 
-func TestParse(t *testing.T) {
+func TestConverter_Parse(t *testing.T) {
 	for i, tt := range []struct {
 		rawurl string
 		want   string
 		err    error
 	}{
-		{"http://example.com/foo/bar.jpg", "", diva.ErrNotDivaURL},
-		{"http://diva.cmore.se/image.aspx", "", diva.ErrMissingRequiredArgument},
+		{"http://example.com/foo/bar.jpg", "", ErrNotDivaURL},
+		{"http://diva.cmore.se/image.aspx", "", ErrMissingRequiredArgument},
 		{"http://diva.cmore.se/image.aspx?id=e4c78001-2854-4151-baa5-a46e070f2cee&formatid=215", "https://img-cdn-cmore.b17g.services/e4c78001-2854-4151-baa5-a46e070f2cee/215.img", nil},
 		{"http://diva.cmore.se/image.aspx?id=b1876803-f5bf-47a6-9a5a-1ef0ee080416&id2=ac4213c2-3d76-4814-80f1-d918700c4eaf&formatid=21", "https://img-cdn-cmore.b17g.services/b1876803-f5bf-47a6-9a5a-1ef0ee080416/ac4213c2-3d76-4814-80f1-d918700c4eaf/21.img", nil},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			u, err := diva.Parse(tt.rawurl)
+			conv := NewConverter()
+
+			u, err := conv.Parse(tt.rawurl)
 			if err != nil {
 				ue, ok := err.(*url.Error)
 				if !ok {
@@ -50,8 +54,7 @@ func TestParse(t *testing.T) {
 				}
 
 				if ue.Err != tt.err {
-					t.Fatalf("diva.Parse(%q) returned error: %v\n", tt.rawurl, err)
-
+					t.Fatalf("conv.Parse(%q) returned error: %v\n", tt.rawurl, err)
 				}
 			}
 
@@ -64,15 +67,17 @@ func TestParse(t *testing.T) {
 	}
 }
 
-func ExampleParse() {
-	if u, err := diva.Parse("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"); err == nil {
+func ExampleConverter_Parse() {
+	conv := NewConverter()
+
+	if u, err := conv.Parse("http://diva.cmore.se/image.aspx?formatid=221&id=a21630f5-ef51-4632-bf6f-cc94073d3cb1"); err == nil {
 		fmt.Println(u.String())
 	}
 
 	// Output: https://img-cdn-cmore.b17g.services/a21630f5-ef51-4632-bf6f-cc94073d3cb1/221.img
 }
 
-func TestNewURL(t *testing.T) {
+func TestConverter_NewURL(t *testing.T) {
 	for i, tt := range []struct {
 		id1, id2, formatID, want string
 	}{
@@ -86,7 +91,9 @@ func TestNewURL(t *testing.T) {
 		{"id1", "id2", "format", "https://img-cdn-cmore.b17g.services/id1/id2/format.img"},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			u := diva.NewURL(tt.id1, tt.id2, tt.formatID)
+			conv := NewConverter()
+
+			u := conv.NewURL(tt.id1, tt.id2, tt.formatID)
 
 			if got := u.String(); got != tt.want {
 				t.Fatalf("u.String() = %q, want %q", got, tt.want)
