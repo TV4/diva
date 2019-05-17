@@ -1,6 +1,7 @@
 package diva
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 	"path"
@@ -9,14 +10,20 @@ import (
 
 // Converter converts diva URLs into CDN URLs.
 type Converter struct {
-	baseURL string
+	baseURL      string
+	cometVersion int
 }
 
 // NewConverter returns a new converter instance.
 func NewConverter(baseurl string) *Converter {
 	return &Converter{
-		baseURL: baseurl,
+		baseURL:      baseurl,
+		cometVersion: 5,
 	}
+}
+
+func (c *Converter) UseComet6URLParsing() {
+	c.cometVersion = 6
 }
 
 // CDNRawURL converts diva rawurl string into CDN rawurl string
@@ -66,15 +73,30 @@ func (c *Converter) NewURL(id, id2, formatID string) (*url.URL, error) {
 		return nil, err
 	}
 
-	u.Path = path.Join(u.Path, makePath(id, id2, formatID))
-
-	return u, nil
+	switch c.cometVersion {
+	case 5:
+		u.Path = path.Join(u.Path, makeComet5Path(id, id2, formatID))
+		return u, nil
+	case 6:
+		u.Path = path.Join(u.Path, makeComet6Path(id, id2, formatID))
+		return u, nil
+	default:
+		return nil, errors.New("invalid Comet version")
+	}
 }
 
-func makePath(id, id2, formatID string) string {
+func makeComet5Path(id, id2, formatID string) string {
 	if id2 != "" {
 		return fmt.Sprintf("%s/%s/%s.img", id, id2, formatID)
 	}
 
 	return fmt.Sprintf("%s/%s.img", id, formatID)
+}
+
+func makeComet6Path(id, id2, formatID string) string {
+	if id2 != "" {
+		return fmt.Sprintf("%s/%s/%s.jpg", id, id2, formatID)
+	}
+
+	return fmt.Sprintf("%s/%s.jpg", id, formatID)
 }
