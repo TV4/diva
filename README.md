@@ -1,3 +1,5 @@
+**Deprecated; this package is no longer maintained.**
+
 # diva
 
 [![Build Status](https://travis-ci.org/TV4/diva.svg?branch=master)](https://travis-ci.org/TV4/diva)

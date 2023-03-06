@@ -1,4 +1,5 @@
 /*
+Deprecated: This package is no longer maintained.
 
 Package diva converts diva.cmore.se URLs into img-cdn-cmore.b17g.services URLs
 
